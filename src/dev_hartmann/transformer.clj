@@ -1,6 +1,5 @@
 (ns dev-hartmann.transformer
-    (:require [java-time :as java-time]
-              [clojure.string :as str]
+    (:require [clojure.string :as str]
               [clojure.term.colors :refer [green on-grey reverse-color yellow red]]))
 
 (defn- review-count->str [count]
@@ -23,9 +22,9 @@
 (defn review-request->todo [entry]
   (let [author (get-in entry [:author :login])
         title (:title entry)
-        now (java-time/instant)
-        created-at (java-time/instant (:createdAt entry))
-        hours-since (.toHours (java-time/duration created-at now))
+        now (java.time.Instant/now)
+        created-at (java.time.Instant/parse (:createdAt entry))
+        hours-since (.toHours (java.time.Duration/between created-at now))
         state (:state entry)
         url-str (url->str (:url entry))
         review-count (get-in entry [:reviews :totalCount])]
@@ -43,11 +42,11 @@
 
 (defn change-request->todo [entry]
   (let [title (:title entry)
-        now (java-time/instant)
+        now (java.time.Instant/now)
         url-str (url->str (:url entry))
         change-request (first (reverse (sort-by :createdAt (filter #(= "CHANGES_REQUESTED" (get % :state)) (get-in entry [:reviews :nodes])))))
-        created-at (java-time/instant (:createdAt change-request))
-        hours-since (.toHours (java-time/duration created-at now))
+        created-at (java.time.Instant/parse (:createdAt change-request))
+        hours-since (.toHours (java.time.Duration/between created-at now))
         author (get-in change-request [:author :login])
         comment (review-comment->str (:body change-request))]
     (->> [(str/trim (change-request->str "Changes requested: " author title comment hours-since))
