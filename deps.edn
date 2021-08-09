@@ -4,8 +4,8 @@
         org.martinklepsch/clj-http-lite {:mvn/version "0.4.3"}
         clojure-term-colors/clojure-term-colors {:mvn/version "0.1.0"}}
  :aliases
- {:run-m {:main-opts ["-m" "dev-hartmann.gitodo"]}
-  :run-x {:ns-default dev-hartmann.gitodo
+ {:run-m {:main-opts ["-m" "dev-hartmann.gitdo"]}
+  :run-x {:ns-default dev-hartmann.gitdo
           :exec-fn -main}
   :test {:extra-paths ["test"]
          :extra-deps {org.clojure/test.check {:mvn/version "1.1.0"}}}
@@ -18,6 +18,6 @@
   :uberjar {:replace-deps {com.github.seancorfield/depstar {:mvn/version "2.0.193"}}
             :exec-fn hf.depstar/uberjar
             :exec-args {:aot true
-                        :jar "gitodo.jar"
-                        :main-class "dev-hartmann.gitodo"
+                        :jar "gitdo.jar"
+                        :main-class "dev-hartmann.gitdo"
                         :sync-pom true}}}}

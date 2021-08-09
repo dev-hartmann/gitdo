@@ -1,4 +1,4 @@
-(ns dev-hartmann.gitodo
+(ns dev-hartmann.gitdo
   (:require [dev-hartmann.config :refer [get-config]]
             [dev-hartmann.formatters :refer :all]
             [dev-hartmann.graphql-connector :as gc]
@@ -13,3 +13,4 @@
         prs-to-review (gc/get-items config "review-requested" gc/base-query tr/review-request->todo gc/review-group-fn so-review-count st-review-count)]
     (print-todos! "Own PRs:" [open-own changes-requested])
     (print-todos! "PRs to review:" prs-to-review)))
+  

@@ -1,12 +1,11 @@
 (ns dev-hartmann.config
-  (:require [clojure.java.io :as io]
-            [clojure.string :refer [blank?]]))
+  (:require [clojure.java.io :as io]))
 
 (defn- config-file-present? []
   (.exists (io/file (System/getProperty "user.home") "gitdo.edn")))
 
 (defn- generate-config []
-  (println "Could not find gitodo.edn in ~/HOME, creating one...")
+  (println "Could not find gitdo.edn in ~/HOME, creating one...")
   (println "Please enter git credentials:")
   (let [home-dir (System/getProperty "user.home")
         _ (println "username: ")

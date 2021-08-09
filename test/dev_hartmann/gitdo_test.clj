@@ -1,4 +1,4 @@
-(ns dev-hartmann.gitodo-test
+(ns dev-hartmann.gitdo-test
   (:require [clojure.test :refer :all]
             [dev-hartmann.gitodo :refer :all]))
 
