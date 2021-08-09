@@ -43,7 +43,7 @@
   (str (inc idx) ". " item)) /
 
 (defn- generate-security-header [token]
-  {"Authorization" token})
+  {"Authorization" (str "bearer " token)})
 
 (defn- generate-request-body [query query-variables]
   (generate-string {:query query
@@ -68,7 +68,7 @@
       :data
       :search
       :nodes))
-                             
+
 (defn get-items
   ([config query-type query transformer group-fn section-one section-two]
    (get-items config query-type query "" transformer group-fn section-one section-two))
@@ -76,12 +76,21 @@
    (let [security-header (generate-security-header (:token config))
          query-variables (generate-query-variable query-type (:username config) review-state)
          request-body (generate-request-body query query-variables)
+         url (if (str/blank? (:alt-url config)) graphql-endpoint (:alt-url config))
          request (generate-request security-header request-body)
-         sorted-results (sort-by :createdAt (post-grapqhl-request graphql-endpoint request))
-         grouped-results (group-fn sorted-results section-one section-two)]
-     (for [entry grouped-results]
-       (let [section-start (key entry)
-             formatted-entries (map transformer (val entry))
-             indexed-entries (map #(apply indexed->string %) (map-indexed vector formatted-entries))
-             result (if (= (count indexed-entries) 0) ["- nothing to do -"] indexed-entries)]
-         (str/join \newline (conj (into [section-start] result) " ")))))))
+         sorted-results (sort-by :createdAt (post-grapqhl-request url request))]
+     (if-not (nil? group-fn)
+       (let [grouped-results (group-fn sorted-results section-one section-two)]
+         (for [entry grouped-results]
+           (let [section-start (key entry)
+                 formatted-entries (map transformer (val entry))
+                 indexed-entries (map #(apply indexed->string %) (map-indexed vector formatted-entries))
+                 result (if (seq indexed-entries) indexed-entries ["- nothing to do -"])
+                 result-string (conj (into [section-start] result) " ")]
+             (str/join \newline result-string))))
+       (if (seq sorted-results)
+         (str/join \newline (-> (map transformer sorted-results)
+                                (conj section-one)
+                                vec
+                                (conj " ")))
+         (str/join \newline [section-one "- nothing to do -" " "]))))))

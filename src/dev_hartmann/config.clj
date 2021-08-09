@@ -1,5 +1,6 @@
 (ns dev-hartmann.config
-  (:require [clojure.java.io :as io]))
+  (:require [clojure.java.io :as io]
+            [clojure.string :refer [blank?]]))
 
 (defn- config-file-present? []
   (.exists (io/file (System/getProperty "user.home") "gitdo.edn")))
@@ -12,7 +13,9 @@
         user-name (read-line)
         _ (println "token: ")
         token (read-line)
-        config {:username user-name :token (str "bearer " token)}]
+        _ (println "enterprise github url:")
+        alt-url (read-line)
+        config {:username user-name :token token :alt-url alt-url}]   
     (spit (io/file home-dir "gitdo.edn") (.toString config))
     (when (config-file-present?)
       (println "Config successfully written to: ~/" home-dir "/gitdo.edn!\n"))
