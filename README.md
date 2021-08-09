@@ -25,6 +25,7 @@ There are multiple ways of using gitdo:
 2. `clj -X:uberjar` to create a jar and run it via `java -jar gitdo.jar`
     For convience: add the .jar to your path and create an alias
 3. Create an executable with graalvm/native-image: use the build.sh in bin.
+4. If you are on macOS try the release. (Only testesd on intel macs, please provide feedback if you are using M1)
 
 ## Usage
 
