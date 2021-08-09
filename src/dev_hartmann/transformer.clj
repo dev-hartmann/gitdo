@@ -1,23 +1,8 @@
 (ns dev-hartmann.transformer
     (:require [clojure.string :as str]
-              [clojure.term.colors :refer [green on-grey reverse-color yellow red]]))
+              [dev-hartmann.formatters :refer [url->str review-request->str review-comment->str change-request->str]]))
 
-(defn- review-count->str [count]
-  (if (> count 0)
-    (str " reviews: " count)
-    " "))
 
-(defn- url->str [url]
-  (str "URL: " url))
-
-(defn- get-hours-color [hours]
-  (cond
-    (and (> hours 0) (<= hours 15)) (on-grey (reverse-color (yellow hours " hours")))
-    (> hours 15) (on-grey (reverse-color (red hours " hours")))
-    :else (on-grey (reverse-color (green "under one hour.")))))
-
-(defn- review-request->str [state author title since review-count]
-  (str (on-grey (reverse-color (green (str state " ")))) (get-hours-color since) " '" title "'" " by " author (review-count->str review-count)))
 
 (defn review-request->todo [entry]
   (let [author (get-in entry [:author :login])
@@ -32,13 +17,6 @@
           (str/trim url-str)]
          (str/join \newline))))
 
-(defn- change-request->str [state author title comment since]
-  (str (on-grey (reverse-color (red state))) (get-hours-color since) " '" title "' " author " reason: '" comment "'"))
-
-(defn- review-comment->str [comment]
-  (if-not (nil? comment)
-    comment
-    "- not commented -"))
 
 (defn change-request->todo [entry]
   (let [title (:title entry)
@@ -52,4 +30,5 @@
     (->> [(str/trim (change-request->str "Changes requested: " author title comment hours-since))
           (str/trim url-str)]
          (str/join \newline))))
+
 

@@ -1,26 +1,11 @@
 (ns dev-hartmann.gitodo
-  (:require [clojure.java.io :as io]
+  (:require [dev-hartmann.config :refer [get-config]]
             [dev-hartmann.formatters :refer :all]
             [dev-hartmann.graphql-connector :as gc]
             [dev-hartmann.transformer :as tr])
   (:gen-class))
 
 
-(defn- config-file-present? []
-  (.exists (io/file "gtdo.edn")))
-
-(defn- generate-config []
-  (println "please enter git user-name and access-token:")
-  (let [user-name (read-line) 
-        token (read-line)
-        config {:username user-name :token token}]
-    (spit "gtdo.edn" (.toString config))
-    config))
-
-(defn- get-config []
-  (if (config-file-present?)
-    (read-string (slurp "gtdo.edn"))
-    (generate-config)))
 
 (defn -main
   [& args]
