@@ -3,7 +3,7 @@
 
 (def so-review-count (underline "Not reviewd yet (higher priority):"))
 (def st-review-count (underline "Already reviewed by someone else:"))
-(def so-no-review (underline "Not reviewd yet:"))
+(def so-no-review (underline "Still open:"))
 (def st-change-requested (underline "Changes requested:"))
 
 (defn- review-count->str [count]
@@ -26,8 +26,9 @@
     (> hours 24) (on-grey (reverse-color (red (hours->day-str hours))))
     :else (on-grey (reverse-color (green "under one hour.")))))
 
-(defn review-request->str [state author title since review-count]
-  (str (on-grey (reverse-color (green (str state " ")))) (hours->string since) " '" title "'" " by " author (review-count->str review-count)))
+(defn review-request->str [state author title since review-count approvals]
+  (let [approval-string (if (seq approvals) " - APPROVED: can be merged!" "")]
+    (str (on-grey (reverse-color (green (str state " ")))) (hours->string since) " '" title "'" " by " author (review-count->str review-count) approval-string)))
 
 (defn change-request->str [state author title comment since]
   (str (on-grey (reverse-color (red state))) (hours->string since) " '" title "' " author " reason: '" comment "'"))
