@@ -14,10 +14,16 @@
 (defn url->str [url]
   (str "URL: " url))
 
+(defn- hours->day-str [hours]
+  (let [days (quot hours 24)]
+    (if (> days 1)
+      (str days " days")
+      (str days " day"))))
+
 (defn- hours->string [hours]
   (cond
-    (and (> hours 0) (<= hours 15)) (on-grey (reverse-color (yellow hours " hours")))
-    (> hours 15) (on-grey (reverse-color (red hours " hours")))
+    (and (> hours 0) (<= hours 24)) (on-grey (reverse-color (yellow hours " hours")))
+    (> hours 24) (on-grey (reverse-color (red (hours->day-str hours))))
     :else (on-grey (reverse-color (green "under one hour.")))))
 
 (defn review-request->str [state author title since review-count]
